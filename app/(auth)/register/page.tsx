@@ -13,6 +13,14 @@ import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import NextLink from "next/link";
 import Image from "next/image";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { RegisterCredential } from "@/types";
+import { useAuth } from "@/hooks/useAuth";
+import Alert from "@mui/material/Alert";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const RegisterContainer = styled(Stack)(({ theme }) => ({
   height: "100dvh",
@@ -36,7 +44,41 @@ const Card = styled(MuiCard)(({ theme }) => ({
   },
 }));
 
-export default function LoginPage() {
+const RegisterSchema = z.object({
+  name: z.string().min(2).max(100),
+  email: z.string().email(),
+  password: z.string().min(8),
+});
+
+type RegisterSchema = z.infer<typeof RegisterSchema>;
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const [error, setError] = useState<string>("");
+
+  const {
+    register,
+    handleSubmit,
+
+    formState: { errors },
+  } = useForm<RegisterSchema>({
+    resolver: zodResolver(RegisterSchema),
+  });
+
+  const { handleRegister } = useAuth();
+
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      await handleRegister(data);
+
+      router.push("/login?status=success");
+    } catch (error) {
+      const errorMessage =
+        error instanceof Error ? error.message : "An unexpected error occured";
+      setError(errorMessage);
+    }
+  });
+
   return (
     <RegisterContainer>
       <Card>
@@ -53,13 +95,24 @@ export default function LoginPage() {
 
         <Box
           component="form"
+          onSubmit={onSubmit}
           sx={{ display: "flex", flexDirection: "column", rowGap: 2 }}
           noValidate
         >
+          {error && <Alert severity="error">{error}</Alert>}
           <FormControl>
             <FormLabel htmlFor="name">Name</FormLabel>
-            <TextField id="name" size="small" autoComplete="name" />
+            <TextField
+              id="name"
+              type="text"
+              size="small"
+              autoComplete="name"
+              {...register("name")}
+              helperText={errors.name?.message}
+              error={Boolean(errors.name)}
+            />
           </FormControl>
+
           <FormControl>
             <FormLabel htmlFor="email">Email</FormLabel>
             <TextField
@@ -67,8 +120,12 @@ export default function LoginPage() {
               type="email"
               size="small"
               autoComplete="email"
+              {...register("email")}
+              helperText={errors.email?.message}
+              error={Boolean(errors.email)}
             />
           </FormControl>
+
           <FormControl>
             <FormLabel htmlFor="password">Password</FormLabel>
             <TextField
@@ -76,6 +133,9 @@ export default function LoginPage() {
               type="password"
               size="small"
               autoComplete="new-password"
+              {...register("password")}
+              helperText={errors.password?.message}
+              error={Boolean(errors.password)}
             />
           </FormControl>
 
