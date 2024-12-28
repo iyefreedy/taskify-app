@@ -9,6 +9,9 @@ import { styled } from "@mui/material/styles";
 import FormLabel from "@mui/material/FormLabel";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
+import Divider from "@mui/material/Divider";
+import Link from "@mui/material/Link";
+import NextLink from "next/link";
 
 const RegisterContainer = styled(Stack)(({ theme }) => ({
   height: "100dvh",
@@ -69,9 +72,25 @@ export default function LoginPage() {
           </FormControl>
 
           <Button type="submit" variant="contained">
-            Login
+            Register
           </Button>
         </Box>
+
+        <Divider>
+          <Typography sx={{ color: "text.secondary" }}>or</Typography>
+        </Divider>
+
+        <Typography sx={{ textAlign: "center" }}>
+          Already have an account?{" "}
+          <Link
+            component={NextLink}
+            href="/login"
+            variant="body2"
+            sx={{ alignSelf: "center" }}
+          >
+            Sign in
+          </Link>
+        </Typography>
       </Card>
     </RegisterContainer>
   );
