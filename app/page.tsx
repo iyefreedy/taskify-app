@@ -4,6 +4,7 @@ import Stack from "@mui/material/Stack";
 export default function Home() {
   return (
     <Stack
+      component="main"
       sx={{
         height: "100dvh",
         minHeight: "100%",
