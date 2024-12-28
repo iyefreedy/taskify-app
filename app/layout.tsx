@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${plusJakartaSans.variable} `}>
         <AppRouterCacheProvider>
-          <CssBaseline enableColorScheme={false} />
+          <CssBaseline />
           <ThemeProvider theme={theme}>{children}</ThemeProvider>
         </AppRouterCacheProvider>
       </body>
