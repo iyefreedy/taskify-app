@@ -12,6 +12,7 @@ import Button from "@mui/material/Button";
 import Divider from "@mui/material/Divider";
 import Link from "@mui/material/Link";
 import NextLink from "next/link";
+import Image from "next/image";
 
 const RegisterContainer = styled(Stack)(({ theme }) => ({
   height: "100dvh",
@@ -39,7 +40,14 @@ export default function LoginPage() {
   return (
     <RegisterContainer>
       <Card>
-        <Typography variant="h4" component="h1">
+        <NextLink href="/">
+          <Image src="./taskify.svg" alt="Taskify" width={100} height={48} />
+        </NextLink>
+        <Typography
+          variant="h4"
+          component="h1"
+          sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
+        >
           Register
         </Typography>
 
