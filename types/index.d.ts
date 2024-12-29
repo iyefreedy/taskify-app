@@ -1,3 +1,5 @@
+import type {} from "@mui/material/themeCssVarsAugmentation";
+
 export interface User {
   id: string;
   name: string;
