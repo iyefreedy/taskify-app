@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v15-appRouter";
 import { ThemeProvider } from "@mui/material/styles";
-import theme from "@/theme";
+import theme from "@/lib/theme";
 import CssBaseline from "@mui/material/CssBaseline";
-import { AuthProvider } from "@/context/AuthContext";
+import { AuthProvider } from "@/lib/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "Taskify",
