@@ -1,8 +1,7 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/lib/hooks/useAuth";
 import Avatar from "@mui/material/Avatar";
-import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import Menu from "@mui/material/Menu";

@@ -1,8 +1,8 @@
 "use client";
 
-import { LoginCredential, RegisterCredential, User } from "@/types";
+import { LoginCredential, RegisterCredential, User } from "@/lib/types";
 import React, { createContext, useEffect, useState } from "react";
-import API from "../API";
+import API from "../../API";
 
 interface AuthContextProps {
   user?: User;

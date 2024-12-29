@@ -8,6 +8,15 @@ export interface User {
   updatedAt: Date;
 }
 
+export interface Todo {
+  id: number;
+  title: string;
+  description?: string;
+  dueDate?: any;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export type RegisterCredential = {
   name: string;
   email: string;
