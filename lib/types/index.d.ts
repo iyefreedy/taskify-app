@@ -12,7 +12,7 @@ export interface Todo {
   id: number;
   title: string;
   description?: string;
-  dueDate?: any;
+  dueDate?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
