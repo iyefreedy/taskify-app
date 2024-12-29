@@ -25,12 +25,7 @@ const todoSchema = z.object({
 export default function HomePage() {
   const [open, setOpen] = useState(false);
 
-  const {
-    control,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<Todo>({
+  const { control, register, handleSubmit } = useForm<Todo>({
     resolver: zodResolver(todoSchema),
   });
 
