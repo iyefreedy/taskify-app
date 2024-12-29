@@ -19,7 +19,7 @@ import { z } from "zod";
 import { RegisterCredential } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
 import Alert from "@mui/material/Alert";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useState } from "react";
 
 const RegisterContainer = styled(Stack)(({ theme }) => ({
@@ -44,40 +44,30 @@ const Card = styled(MuiCard)(({ theme }) => ({
   },
 }));
 
-const RegisterSchema = z.object({
+const registerSchema = z.object({
   name: z.string().min(2).max(100),
   email: z.string().email(),
   password: z.string().min(8),
 });
 
-type RegisterSchema = z.infer<typeof RegisterSchema>;
-
 export default function RegisterPage() {
-  const router = useRouter();
-  const [error, setError] = useState<string>("");
-
   const {
     register,
     handleSubmit,
-
     formState: { errors },
-  } = useForm<RegisterSchema>({
-    resolver: zodResolver(RegisterSchema),
+  } = useForm<RegisterCredential>({
+    resolver: zodResolver(registerSchema),
   });
 
-  const { handleRegister } = useAuth();
+  const { user, error, loading, handleRegister } = useAuth();
 
   const onSubmit = handleSubmit(async (data) => {
-    try {
-      await handleRegister(data);
-
-      router.push("/login?status=success");
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "An unexpected error occured";
-      setError(errorMessage);
-    }
+    await handleRegister(data);
   });
+
+  if (user) {
+    return redirect("/home");
+  }
 
   return (
     <RegisterContainer>
@@ -139,7 +129,7 @@ export default function RegisterPage() {
             />
           </FormControl>
 
-          <Button type="submit" variant="contained">
+          <Button type="submit" variant="contained" disabled={loading}>
             Register
           </Button>
         </Box>

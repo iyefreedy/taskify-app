@@ -11,3 +11,8 @@ export type RegisterCredential = {
   email: string;
   password: string;
 };
+
+export type LoginCredential = {
+  email: string;
+  password: string;
+};
