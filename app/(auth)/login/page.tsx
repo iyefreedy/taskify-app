@@ -1,7 +1,7 @@
 "use client";
 
-import { useAuth } from "@/hooks/useAuth";
-import { LoginCredential } from "@/types";
+import { useAuth } from "@/lib/hooks/useAuth";
+import { LoginCredential } from "@/lib/types";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Alert from "@mui/material/Alert";
 import Box from "@mui/material/Box";

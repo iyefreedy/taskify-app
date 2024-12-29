@@ -16,8 +16,8 @@ import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { RegisterCredential } from "@/types";
-import { useAuth } from "@/hooks/useAuth";
+import { RegisterCredential } from "@/lib/types";
+import { useAuth } from "@/lib/hooks/useAuth";
 import Alert from "@mui/material/Alert";
 import { redirect } from "next/navigation";
 
