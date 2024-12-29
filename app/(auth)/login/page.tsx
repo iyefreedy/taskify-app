@@ -49,7 +49,7 @@ const loginSchema = z.object({
 });
 
 export default function LoginPage() {
-  const { user, error, loading } = useAuth();
+  const { user, error, loading, handleLogin } = useAuth();
 
   const {
     register,
@@ -59,7 +59,9 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = handleSubmit((data) => console.log(data));
+  const onSubmit = handleSubmit(async (data) => {
+    await handleLogin(data);
+  });
 
   if (user) {
     return redirect("/home");
@@ -94,6 +96,7 @@ export default function LoginPage() {
               type="email"
               size="small"
               autoComplete="email"
+              autoFocus
               {...register("email")}
               error={Boolean(errors.email)}
               helperText={errors.email?.message}
