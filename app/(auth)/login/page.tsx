@@ -17,7 +17,7 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
 import NextLink from "next/link";
-import { redirect, useParams, useSearchParams } from "next/navigation";
+import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 

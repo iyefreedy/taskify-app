@@ -19,8 +19,7 @@ import { z } from "zod";
 import { RegisterCredential } from "@/types";
 import { useAuth } from "@/hooks/useAuth";
 import Alert from "@mui/material/Alert";
-import { redirect, useRouter } from "next/navigation";
-import { useState } from "react";
+import { redirect } from "next/navigation";
 
 const RegisterContainer = styled(Stack)(({ theme }) => ({
   height: "100dvh",
