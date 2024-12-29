@@ -15,6 +15,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Todo } from "@/lib/types";
+import dayjs from "dayjs";
 
 const todoSchema = z.object({
   title: z.string().min(1),
@@ -102,11 +103,10 @@ export default function HomePage() {
             render={({ field }) => (
               <DatePicker
                 label="Due date"
-                onAccept={(date) => {
+                onChange={(date) => {
                   field.onChange(date);
                 }}
-                value={field.value}
-                {...register("dueDate")}
+                value={field.value ? dayjs(field.value) : null}
               />
             )}
           />
