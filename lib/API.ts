@@ -1,8 +1,7 @@
 import { LoginCredential, RegisterCredential } from "@/lib/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-export default {
+const API = {
   async register({ name, email, password }: RegisterCredential) {
     const response = await fetch(`${API_URL}/api/register`, {
       method: "POST",
@@ -53,3 +52,4 @@ export default {
     return json;
   },
 };
+export default API;
