@@ -1,4 +1,4 @@
-import { LoginCredential, RegisterCredential } from "./lib/types";
+import { LoginCredential, RegisterCredential } from "@/lib/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 

@@ -2,7 +2,7 @@
 
 import { LoginCredential, RegisterCredential, User } from "@/lib/types";
 import React, { createContext, useEffect, useState } from "react";
-import API from "../../API";
+import API from "@/lib/API";
 
 interface AuthContextProps {
   user?: User;
