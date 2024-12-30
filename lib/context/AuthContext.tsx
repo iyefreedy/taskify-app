@@ -6,6 +6,7 @@ import API from "@/lib/API";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 
 interface AuthContextProps {
+  accessToken: string | null;
   user?: User;
   loading: boolean;
   error?: string;
@@ -18,12 +19,9 @@ interface AuthContextProps {
   handleLogout: () => void;
 }
 
-export const AuthContext = createContext<AuthContextProps>({
-  loading: false,
-  handleRegister: async () => {},
-  handleLogin: async () => {},
-  handleLogout: () => {},
-});
+export const AuthContext = createContext<AuthContextProps>(
+  {} as AuthContextProps
+);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const { value: accessToken, setValue: setAccessToken } = useLocalStorage(
@@ -105,6 +103,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user,
         loading,
         error,
+        accessToken,
         handleRegister,
         handleLogin,
         handleLogout,
