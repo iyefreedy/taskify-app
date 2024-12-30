@@ -14,8 +14,15 @@ import { z } from "zod";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Todo } from "@/lib/types";
 import dayjs from "dayjs";
+import { useAuth } from "@/lib/hooks/useAuth";
+import API from "@/lib/API";
+import { Todo } from "@/lib/types";
+import { useFetchTodos } from "@/lib/hooks/useFetchTodos";
+import Stack from "@mui/material/Stack";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import ListItemText from "@mui/material/ListItemText";
 
 const todoSchema = z.object({
   title: z.string().min(1),
@@ -25,8 +32,15 @@ const todoSchema = z.object({
 
 export default function HomePage() {
   const [open, setOpen] = useState(false);
+  const { accessToken } = useAuth();
+  const { todos } = useFetchTodos();
 
-  const { control, register, handleSubmit } = useForm<Todo>({
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Todo>({
     resolver: zodResolver(todoSchema),
   });
 
@@ -38,27 +52,41 @@ export default function HomePage() {
     setOpen(false);
   };
 
-  const onSubmit = handleSubmit((data) => console.log(data));
+  const onSubmit = handleSubmit(async (data) => {
+    try {
+      await API.createTodo(data, accessToken!);
+      handleClose();
+    } catch (error) {
+      console.log(error);
+    }
+  });
 
   return (
-    <Box
-      component="section"
-      sx={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-      }}
-    >
-      <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
-        My Tasks
-      </Typography>
-      <Button
-        variant="outlined"
-        startIcon={<AddTaskIcon />}
-        onClick={handleOpen}
+    <Box component="section">
+      <Stack
+        direction="row"
+        sx={{ justifyContent: "space-between", alignItems: "center" }}
       >
-        Add new Todo
-      </Button>
+        <Typography component="h2" variant="h6" sx={{ mb: 2 }}>
+          My Tasks
+        </Typography>
+        <Button
+          variant="outlined"
+          startIcon={<AddTaskIcon />}
+          onClick={handleOpen}
+        >
+          Add new Todo
+        </Button>
+      </Stack>
+
+      <List>
+        {todos.map((todo) => (
+          <ListItem key={todo.id}>
+            <ListItemText>{todo.title}</ListItemText>
+            <ListItemText>{todo.content}</ListItemText>
+          </ListItem>
+        ))}
+      </List>
 
       <Dialog
         open={open}
@@ -82,11 +110,12 @@ export default function HomePage() {
             id="title"
             type="text"
             label="Title"
-            autoFocus
             margin="dense"
             fullWidth
             variant="standard"
             {...register("title")}
+            error={Boolean(errors.title)}
+            helperText={errors.title?.message}
           />
           <TextField
             id="content"
@@ -96,17 +125,17 @@ export default function HomePage() {
             fullWidth
             variant="standard"
             {...register("content")}
+            error={Boolean(errors.content)}
+            helperText={errors.content?.message}
           />
           <Controller
             control={control}
             name="dueDate"
-            render={({ field }) => (
+            render={({ field: { onChange, value } }) => (
               <DatePicker
                 label="Due date"
-                onChange={(date) => {
-                  field.onChange(date);
-                }}
-                value={field.value ? dayjs(field.value) : null}
+                value={value ? dayjs(value) : dayjs()}
+                onChange={(date) => onChange(date?.toDate())}
               />
             )}
           />

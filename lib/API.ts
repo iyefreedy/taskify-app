@@ -51,6 +51,21 @@ const API = {
 
     return json;
   },
+  async getTodos(accessToken: string) {
+    const response = await fetch(`${API_URL}/api/todos`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const json = await response.json();
+
+    if (!response.ok) {
+      throw new Error(json["error"]);
+    }
+
+    return json;
+  },
   async createTodo(todo: Todo, accessToken: string) {
     const response = await fetch(`${API_URL}/api/todos`, {
       method: "POST",
