@@ -1,4 +1,4 @@
-import { LoginCredential, RegisterCredential } from "@/lib/types";
+import { LoginCredential, RegisterCredential, Todo } from "@/lib/types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 const API = {
@@ -51,5 +51,24 @@ const API = {
 
     return json;
   },
+  async createTodo(todo: Todo, accessToken: string) {
+    const response = await fetch(`${API_URL}/api/todos`, {
+      method: "POST",
+      body: JSON.stringify(todo),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const json = await response.json();
+
+    if (!response.ok) {
+      throw new Error(json["error"]);
+    }
+
+    return json;
+  },
 };
+
 export default API;
