@@ -19,7 +19,7 @@ import dayjs from "dayjs";
 
 const todoSchema = z.object({
   title: z.string().min(1),
-  description: z.string().max(255).optional(),
+  content: z.string().max(255).optional(),
   dueDate: z.date(),
 });
 
@@ -89,13 +89,13 @@ export default function HomePage() {
             {...register("title")}
           />
           <TextField
-            id="description"
+            id="content"
             type="text"
-            label="Description"
+            label="Content"
             margin="dense"
             fullWidth
             variant="standard"
-            {...register("description")}
+            {...register("content")}
           />
           <Controller
             control={control}
