@@ -11,7 +11,7 @@ export interface User {
 export interface Todo {
   id: number;
   title: string;
-  description?: string;
+  content?: string;
   dueDate?: Date;
   createdAt: Date;
   updatedAt: Date;

@@ -3,6 +3,7 @@
 import { LoginCredential, RegisterCredential, User } from "@/lib/types";
 import React, { createContext, useEffect, useState } from "react";
 import API from "@/lib/API";
+import { useLocalStorage } from "../hooks/useLocalStorage";
 
 interface AuthContextProps {
   user?: User;
@@ -25,10 +26,9 @@ export const AuthContext = createContext<AuthContextProps>({
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [accessToken, setAccessToken] = useState(() =>
-    typeof window !== "undefined"
-      ? window.localStorage.getItem("accessToken")
-      : null
+  const { value: accessToken, setValue: setAccessToken } = useLocalStorage(
+    "accessToken",
+    null
   );
   const [user, setUser] = useState<User>();
   const [loading, setLoading] = useState(false);
@@ -38,6 +38,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const authenticate = async () => {
       if (accessToken == null) {
         setUser(undefined);
+        setError(undefined);
         return;
       }
 
@@ -69,9 +70,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await API.register({ name, email, password });
 
       setAccessToken(response.accessToken);
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem("accessToken", response.accessToken);
-      }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occured";
@@ -87,9 +85,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       const response = await API.login({ email, password });
 
       setAccessToken(response.accessToken);
-      if (typeof window !== "undefined") {
-        window.localStorage.setItem("accessToken", response.accessToken);
-      }
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "An unknown error occured";
@@ -100,10 +95,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleLogout = () => {
-    if (typeof window !== "undefined") {
-      window.localStorage.removeItem("accessToken");
-    }
-
     setAccessToken(null);
     setUser(undefined);
   };
