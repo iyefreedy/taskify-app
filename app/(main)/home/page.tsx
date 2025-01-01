@@ -15,25 +15,25 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
-import { useAuth } from "@/lib/hooks/useAuth";
-import API from "@/lib/API";
 import { Todo } from "@/lib/types";
 import { useFetchTodos } from "@/lib/hooks/useFetchTodos";
 import Stack from "@mui/material/Stack";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import ListItemText from "@mui/material/ListItemText";
+import TableCell from "@mui/material/TableCell";
+import TableRow from "@mui/material/TableRow";
+import TableHead from "@mui/material/TableHead";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
 
 const todoSchema = z.object({
   title: z.string().min(1),
   content: z.string().max(255).optional(),
-  dueDate: z.date(),
+  dueDate: z.date().optional(),
 });
 
 export default function HomePage() {
   const [open, setOpen] = useState(false);
-  const { accessToken } = useAuth();
-  const { todos } = useFetchTodos();
+
+  const { todos, addTodo } = useFetchTodos();
 
   const {
     control,
@@ -53,12 +53,8 @@ export default function HomePage() {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    try {
-      await API.createTodo(data, accessToken!);
-      handleClose();
-    } catch (error) {
-      console.log(error);
-    }
+    await addTodo(data);
+    handleClose();
   });
 
   return (
@@ -79,14 +75,30 @@ export default function HomePage() {
         </Button>
       </Stack>
 
-      <List>
-        {todos.map((todo) => (
-          <ListItem key={todo.id}>
-            <ListItemText>{todo.title}</ListItemText>
-            <ListItemText>{todo.content}</ListItemText>
-          </ListItem>
-        ))}
-      </List>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <TableCell>Title</TableCell>
+            <TableCell>Content</TableCell>
+            <TableCell>Due Date</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {todos.map((todo) => (
+            <TableRow key={todo.id}>
+              <TableCell>{todo.title}</TableCell>
+              <TableCell>{todo.content}</TableCell>
+              <TableCell>
+                {todo.dueDate
+                  ? Intl.DateTimeFormat("id-ID").format(
+                      Date.parse(todo.dueDate)
+                    )
+                  : "-"}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
 
       <Dialog
         open={open}
@@ -134,7 +146,7 @@ export default function HomePage() {
             render={({ field: { onChange, value } }) => (
               <DatePicker
                 label="Due date"
-                value={value ? dayjs(value) : dayjs()}
+                value={value ? dayjs(value) : null}
                 onChange={(date) => onChange(date?.toDate())}
               />
             )}
