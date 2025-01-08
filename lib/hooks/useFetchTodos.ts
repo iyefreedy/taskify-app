@@ -6,6 +6,7 @@ import API from "../API";
 export const useFetchTodos = () => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>();
   const { value: accessToken } = useLocalStorage("accessToken", null);
 
   useEffect(() => {
@@ -18,6 +19,9 @@ export const useFetchTodos = () => {
       } catch (error: unknown) {
         console.log(error);
         setTodos([]);
+        setError(
+          error instanceof Error ? error.message : "An unknown error occured"
+        );
       } finally {
         setLoading(false);
       }
@@ -34,10 +38,34 @@ export const useFetchTodos = () => {
       setTodos([...todos, newTodo]);
     } catch (error: unknown) {
       console.log(error);
+      setError(
+        error instanceof Error ? error.message : "An unknown error occured"
+      );
     } finally {
       setLoading(false);
     }
   };
 
-  return { todos, loading, addTodo };
+  const updateTodo = async (todo: Todo) => {
+    if (!accessToken) return;
+    setLoading(true);
+
+    try {
+      const updatedTodo = await API.updateTodo(todo, accessToken);
+      setTodos((prevTodos) => {
+        const filteredTodos = prevTodos.filter(
+          (value) => value.id !== updatedTodo.id
+        );
+        return [...filteredTodos, updatedTodo];
+      });
+    } catch (error) {
+      setError(
+        error instanceof Error ? error.message : "An unknown error occured"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { todos, loading, error, addTodo, updateTodo };
 };

@@ -84,6 +84,25 @@ const API = {
 
     return json;
   },
+  async updateTodo(todo: Todo, accessToken: string) {
+    const { id, ...rest } = todo;
+    const response = await fetch(`${API_URL}/api/todos/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(rest),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const json = await response.json();
+
+    if (!response.ok) {
+      throw new Error(json["error"]);
+    }
+
+    return json;
+  },
 };
 
 export default API;

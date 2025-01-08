@@ -13,6 +13,7 @@ export interface Todo {
   title: string;
   content?: string;
   dueDate?: string;
+  done: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
