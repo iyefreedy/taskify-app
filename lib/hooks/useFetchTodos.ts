@@ -1,13 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Todo } from "../types";
 import { useLocalStorage } from "./useLocalStorage";
 import API from "../API";
 
 export const useFetchTodos = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
+  const [state, setState] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
   const { value: accessToken } = useLocalStorage("accessToken", null);
+
+  const todos = useMemo(() => {
+    return state.filter((value) => !value.done);
+  }, [state]);
 
   useEffect(() => {
     const fetchTodos = async () => {
@@ -15,10 +19,10 @@ export const useFetchTodos = () => {
       setLoading(true);
       try {
         const todos = await API.getTodos(accessToken);
-        setTodos(todos);
+        setState(todos);
       } catch (error: unknown) {
         console.log(error);
-        setTodos([]);
+        setState([]);
         setError(
           error instanceof Error ? error.message : "An unknown error occured"
         );
@@ -35,7 +39,7 @@ export const useFetchTodos = () => {
     setLoading(true);
     try {
       const newTodo = await API.createTodo(todo, accessToken);
-      setTodos([...todos, newTodo]);
+      setState([...todos, newTodo]);
     } catch (error: unknown) {
       console.log(error);
       setError(
@@ -52,7 +56,7 @@ export const useFetchTodos = () => {
 
     try {
       const updatedTodo = await API.updateTodo(todo, accessToken);
-      setTodos((prevTodos) => {
+      setState((prevTodos) => {
         const filteredTodos = prevTodos.filter(
           (value) => value.id !== updatedTodo.id
         );

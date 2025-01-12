@@ -19,7 +19,9 @@ interface TodoFormProps {
 }
 
 export default function TodoForm({ onSubmit }: TodoFormProps) {
-  const { register, control } = useFormContext<Todo>();
+  const { register, control, watch } = useFormContext<Todo>();
+
+  const formValues = watch();
 
   return (
     <Card>
@@ -56,14 +58,8 @@ export default function TodoForm({ onSubmit }: TodoFormProps) {
                   inputRef={field.ref}
                   onChange={(date) => {
                     field.onChange(date?.toDate());
-                    console.log(
-                      "dayjs + " + date?.toDate(),
-                      "Value: " + field.value
-                    );
                   }}
-                  onError={(error, value) => console.error(error, value)}
                   slotProps={{
-                    // The actions will be the same between desktop and mobile
                     actionBar: {
                       actions: ["clear"],
                     },
@@ -77,7 +73,12 @@ export default function TodoForm({ onSubmit }: TodoFormProps) {
             }}
           ></Controller>
 
-          <Button type="submit" variant="contained" size="small">
+          <Button
+            type="submit"
+            variant="contained"
+            size="small"
+            disabled={!Boolean(formValues.title)}
+          >
             Add
           </Button>
         </Stack>
